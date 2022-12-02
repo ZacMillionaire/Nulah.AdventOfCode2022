@@ -6,7 +6,6 @@ internal class Day1 : BaseDay
 
     public Day1()
     {
-        ReadInput("Day 1");
         ProcessInput();
     }
 
