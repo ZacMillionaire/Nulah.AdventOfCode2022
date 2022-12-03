@@ -34,7 +34,15 @@
                 throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '157'");
             }
 
+            var test2 = d3.Part2Test();
+            if (test2 != 70)
+            {
+                throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '70'");
+            }
+
+
             var part1Answer = d3.GetPart1Answer();
+            var part2Answer = d3.GetPart2Answer();
         }
     }
 }
