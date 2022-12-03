@@ -6,7 +6,7 @@
         {
             Console.WriteLine("Hello, World!");
 
-            Day2();
+            Day3();
 
             Console.ReadKey();
         }
@@ -23,6 +23,18 @@
             var d2 = new Day2();
             var strategyScore = d2.GetStrategyScore();
             var orchestratedScore = d2.CalculateRealStrategyScore();
+        }
+
+        static void Day3()
+        {
+            var d3 = new Day3();
+            var test1 = d3.Part1Test();
+            if (test1 != 157)
+            {
+                throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '157'");
+            }
+
+            var part1Answer = d3.GetPart1Answer();
         }
     }
 }
