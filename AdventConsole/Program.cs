@@ -6,7 +6,7 @@
         {
             Console.WriteLine("Hello, World!");
 
-            Day3();
+            Day4();
 
             Console.ReadKey();
         }
@@ -43,6 +43,18 @@
 
             var part1Answer = d3.GetPart1Answer();
             var part2Answer = d3.GetPart2Answer();
+        }
+
+        static void Day4()
+        {
+            var d4 = new Day4();
+            var test1 = d4.Part1Test();
+            if (test1 != 2)
+            {
+                throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '2'");
+            }
+
+            var part1Answer = d4.GetPart1Answer();
         }
     }
 }
