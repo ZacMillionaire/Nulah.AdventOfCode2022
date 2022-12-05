@@ -53,7 +53,7 @@ namespace AdventConsole
 
         public override string GetPart2Answer()
         {
-            throw new NotImplementedException();
+            return ExecuteStackingCrateMover9001(Input);
         }
 
         private ParsedSupplyInstructions ParseCrateInput(IEnumerable<string> input)
