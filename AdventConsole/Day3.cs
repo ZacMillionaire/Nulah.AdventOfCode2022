@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdventConsole
 {
-    internal class Day3 : BaseDay
+    internal class Day3 : BaseDay<int>
     {
         public override int Part1Test()
         {

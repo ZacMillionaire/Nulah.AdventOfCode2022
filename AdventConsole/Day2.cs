@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdventConsole
 {
-    internal class Day2 : BaseDay
+    internal class Day2 : BaseDay<int>
     {
         private const int WinBonus = 6;
         private const int DrawBonus = 3;

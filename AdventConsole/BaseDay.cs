@@ -2,7 +2,7 @@
 
 namespace AdventConsole;
 
-internal abstract class BaseDay : IDay
+internal abstract class BaseDay<T> : IDay<T>
 {
     protected List<string> Input = new();
 
@@ -18,16 +18,17 @@ internal abstract class BaseDay : IDay
             Input.Add(line);
         }
     }
-    public abstract int Part1Test();
-    public abstract int Part2Test();
-    public abstract int GetPart1Answer();
-    public abstract int GetPart2Answer();
+
+    public abstract T Part1Test();
+    public abstract T Part2Test();
+    public abstract T GetPart1Answer();
+    public abstract T GetPart2Answer();
 }
 
-internal interface IDay
+internal interface IDay<T>
 {
-    int Part1Test();
-    int Part2Test();
-    int GetPart1Answer();
-    int GetPart2Answer();
+    T Part1Test();
+    T Part2Test();
+    T GetPart1Answer();
+    T GetPart2Answer();
 }

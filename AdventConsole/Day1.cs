@@ -2,7 +2,7 @@
 
 namespace AdventConsole;
 
-internal class Day1 : BaseDay
+internal class Day1 : BaseDay<int>
 {
 
     private List<int> GetCalorieCount(IEnumerable<string> input)
