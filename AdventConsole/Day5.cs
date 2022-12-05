@@ -31,7 +31,19 @@ namespace AdventConsole
 
         public override string Part2Test()
         {
-            throw new NotImplementedException();
+            var input = new List<string>
+            {
+                "    [D]    ",
+                "[N] [C]    ",
+                "[Z] [M] [P]",
+                " 1   2   3 ",
+                "",
+                "move 1 from 2 to 1",
+                "move 3 from 1 to 3",
+                "move 2 from 2 to 1",
+                "move 1 from 1 to 2",
+            };
+            return ExecuteStackingCrateMover9001(input);
         }
 
         public override string GetPart1Answer()
@@ -204,6 +216,15 @@ namespace AdventConsole
             return GetTopOfEachCrateStack(parsedInput.CrateLayout);
         }
 
+        private string ExecuteStackingCrateMover9001(List<string> input)
+        {
+            var parsedInput = ParseCrateInput(input);
+
+            PerformCrateRearrangementCrateMover9001(parsedInput);
+
+            return GetTopOfEachCrateStack(parsedInput.CrateLayout);
+        }
+
         /// <summary>
         /// Rearranges the crates in accordance to the parsed instructions
         /// </summary>
@@ -220,6 +241,34 @@ namespace AdventConsole
                 {
                     var movingCrate = sourceColumn.Pop();
                     destinationColumn.Push(movingCrate);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Rearranges the crates in accordance to the parsed instructions, for CreateMover 9001
+        /// (basically instead of the move reversing the order of crates it moves, it preserves)
+        /// </summary>
+        /// <param name="parsedDetails"></param>
+        private void PerformCrateRearrangementCrateMover9001(ParsedSupplyInstructions parsedDetails)
+        {
+            foreach (var moveCommand in parsedDetails.Commands)
+            {
+                // Offset the source/destination columns as we track them using 0 index, but the instructions are 1 indexed
+                var sourceColumn = parsedDetails.CrateLayout[moveCommand.FromColumn - 1];
+                var destinationColumn = parsedDetails.CrateLayout[moveCommand.ToColumn - 1];
+
+                var poppedOrder = new List<char>();
+                for (var i = 0; i != moveCommand.Count; i++)
+                {
+                    poppedOrder.Add(sourceColumn.Pop());
+                }
+
+                poppedOrder.Reverse();
+
+                foreach (var crate in poppedOrder)
+                {
+                    destinationColumn.Push(crate);
                 }
             }
         }
