@@ -26,9 +26,7 @@ namespace AdventConsole
                 "move 1 from 1 to 2",
             };
 
-            ExecuteStacking(input);
-
-            throw new NotImplementedException();
+            return ExecuteStacking(input);
         }
 
         public override string Part2Test()
@@ -38,7 +36,7 @@ namespace AdventConsole
 
         public override string GetPart1Answer()
         {
-            throw new NotImplementedException();
+            return ExecuteStacking(Input);
         }
 
         public override string GetPart2Answer()
@@ -201,7 +199,41 @@ namespace AdventConsole
         {
             var parsedInput = ParseCrateInput(input);
 
-            return "";
+            PerformCrateRearrangement(parsedInput);
+
+            return GetTopOfEachCrateStack(parsedInput.CrateLayout);
+        }
+
+        /// <summary>
+        /// Rearranges the crates in accordance to the parsed instructions
+        /// </summary>
+        /// <param name="parsedDetails"></param>
+        private void PerformCrateRearrangement(ParsedSupplyInstructions parsedDetails)
+        {
+            foreach (var moveCommand in parsedDetails.Commands)
+            {
+                // Offset the source/destination columns as we track them using 0 index, but the instructions are 1 indexed
+                var sourceColumn = parsedDetails.CrateLayout[moveCommand.FromColumn - 1];
+                var destinationColumn = parsedDetails.CrateLayout[moveCommand.ToColumn - 1];
+
+                for (var i = 0; i != moveCommand.Count; i++)
+                {
+                    var movingCrate = sourceColumn.Pop();
+                    destinationColumn.Push(movingCrate);
+                }
+            }
+        }
+
+        private string GetTopOfEachCrateStack(List<Stack<char>> crateStacks)
+        {
+            var topCrates = new List<char>();
+
+            foreach (var crateStack in crateStacks)
+            {
+                topCrates.Add(crateStack.Pop());
+            }
+
+            return string.Join(string.Empty, topCrates);
         }
     }
 }

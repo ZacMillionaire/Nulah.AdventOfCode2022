@@ -12,7 +12,7 @@ namespace AdventConsole
             //RunDay<Day2, int>(15, 12);
             //RunDay<Day3, int>(157, 70);
             //RunDay<Day4, int>(2, 4);
-            RunDay<Day5, string>("CMZ", string.Empty);
+            RunDay<Day5, string>("CMZ", "MCD");
 
             Console.ReadKey();
         }
