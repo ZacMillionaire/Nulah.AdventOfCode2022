@@ -1,4 +1,6 @@
-﻿namespace AdventConsole
+﻿using System.Collections.Generic;
+
+namespace AdventConsole
 {
     internal class Program
     {
@@ -6,16 +8,17 @@
         {
             Console.WriteLine("Hello, World!");
 
-            //RunDay<Day1>(24000, 45000);
-            //RunDay<Day2>(15, 12);
-            //RunDay<Day3>(157, 70);
-            //RunDay<Day4>(2, 4);
+            //RunDay<Day1, int>(24000, 45000);
+            //RunDay<Day2, int>(15, 12);
+            //RunDay<Day3, int>(157, 70);
+            //RunDay<Day4, int>(2, 4);
+            RunDay<Day5, string>("CMZ", string.Empty);
 
             Console.ReadKey();
         }
 
-        static void RunDay<T>(int test1ExpectedResult, int test2ExpectedResult)
-            where T : BaseDay, new()
+        static void RunDay<T, T2>(T2 test1ExpectedResult, T2 test2ExpectedResult)
+            where T : BaseDay<T2>, new()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"Running {typeof(T).Name}");
@@ -23,14 +26,14 @@
 
             var day = Activator.CreateInstance<T>();
             var test1 = day.Part1Test();
-            if (test1 != test1ExpectedResult)
+            if (!EqualityComparer<T2>.Default.Equals(test1, test1ExpectedResult))
             {
                 throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '{test1ExpectedResult}'");
             }
             Console.WriteLine($"Test 1 passed");
 
             var test2 = day.Part2Test();
-            if (test2 != test2ExpectedResult)
+            if (!EqualityComparer<T2>.Default.Equals(test2, test2ExpectedResult))
             {
                 throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '{test2ExpectedResult}'");
             }
