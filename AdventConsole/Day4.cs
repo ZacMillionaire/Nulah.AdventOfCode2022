@@ -9,7 +9,7 @@ namespace AdventConsole
 {
     internal class Day4 : BaseDay
     {
-        public int Part1Test()
+        public override int Part1Test()
         {
             var input = new List<string>()
             {
@@ -24,12 +24,12 @@ namespace AdventConsole
             return ScoreInput(input, RangeContainedIn);
         }
 
-        public int GetPart1Answer()
+        public override int GetPart1Answer()
         {
             return ScoreInput(Input, RangeContainedIn);
         }
 
-        public int Part2Test()
+        public override int Part2Test()
         {
             var input = new List<string>()
             {
@@ -43,7 +43,7 @@ namespace AdventConsole
 
             return ScoreInput(input, RangeOverlapsWith);
         }
-        public int GetPart2Answer()
+        public override int GetPart2Answer()
         {
             return ScoreInput(Input, RangeOverlapsWith);
         }

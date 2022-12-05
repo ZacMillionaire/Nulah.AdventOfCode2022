@@ -8,7 +8,7 @@ namespace AdventConsole
 {
     internal class Day3 : BaseDay
     {
-        public int Part1Test()
+        public override int Part1Test()
         {
             var input = new List<string>
             {
@@ -34,7 +34,7 @@ namespace AdventConsole
             return prioritySum;
         }
 
-        public int Part2Test()
+        public override int Part2Test()
         {
             var input = new List<string>
             {
@@ -73,7 +73,7 @@ namespace AdventConsole
             return badge;
         }
 
-        public int GetPart1Answer()
+        public override int GetPart1Answer()
         {
             var matchingItems = new List<char>();
             foreach (var line in Input)
@@ -87,7 +87,7 @@ namespace AdventConsole
             return prioritySum;
         }
 
-        public int GetPart2Answer()
+        public override int GetPart2Answer()
         {
             var matchingItems = new List<char>();
             for (var i = 0; i < Input.Count; i += 3)

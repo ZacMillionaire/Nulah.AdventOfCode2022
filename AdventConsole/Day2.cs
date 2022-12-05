@@ -11,32 +11,6 @@ namespace AdventConsole
         private const int WinBonus = 6;
         private const int DrawBonus = 3;
 
-        public int GetStrategyScore()
-        {
-            var runningTotal = 0;
-            foreach (var line in Input)
-            {
-                var elfAction = ParseRockPaperScissorAction(line[0]);
-                var myAction = ParseRockPaperScissorAction(line[2]);
-                runningTotal += ScoreResult(elfAction, myAction);
-            }
-
-            return runningTotal;
-        }
-
-        public int CalculateRealStrategyScore()
-        {
-            var runningTotal = 0;
-            foreach (var line in Input)
-            {
-                var elfAction = ParseRockPaperScissorAction(line[0]);
-                var myAction = ProduceOrchestratedResult(elfAction, ParseExpectedOutcome(line[2]));
-                runningTotal += ScoreResult(elfAction, myAction);
-            }
-
-            return runningTotal;
-        }
-
         /// <summary>
         /// Determines the action to perform, based on the character input. Elves use A-C for Rock,Paper,Scissors respectively,
         /// the player uses X-Z for the same
@@ -182,6 +156,64 @@ namespace AdventConsole
             /// Y
             /// </summary>
             Draw
+        }
+
+        private int GetGameOutcome(List<string> gameInput)
+        {
+            var runningTotal = 0;
+            foreach (var line in gameInput)
+            {
+                var elfAction = ParseRockPaperScissorAction(line[0]);
+                var myAction = ParseRockPaperScissorAction(line[2]);
+                runningTotal += ScoreResult(elfAction, myAction);
+            }
+
+            return runningTotal;
+        }
+        private int GetOrchestratedGameOutcome(List<string> gameInput)
+        {
+            var runningTotal = 0;
+            foreach (var line in gameInput)
+            {
+                var elfAction = ParseRockPaperScissorAction(line[0]);
+                var myAction = ProduceOrchestratedResult(elfAction, ParseExpectedOutcome(line[2]));
+                runningTotal += ScoreResult(elfAction, myAction);
+            }
+
+            return runningTotal;
+        }
+
+        public override int Part1Test()
+        {
+            var input = new List<string>
+            {
+                "A Y",
+                "B X",
+                "C Z",
+            };
+            return GetGameOutcome(input);
+        }
+
+        public override int Part2Test()
+        {
+            var input = new List<string>
+            {
+                "A Y",
+                "B X",
+                "C Z",
+            };
+
+            return GetOrchestratedGameOutcome(input);
+        }
+
+        public override int GetPart1Answer()
+        {
+            return GetGameOutcome(Input);
+        }
+
+        public override int GetPart2Answer()
+        {
+            return GetOrchestratedGameOutcome(Input);
         }
     }
 }

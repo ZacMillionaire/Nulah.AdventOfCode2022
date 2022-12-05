@@ -6,62 +6,41 @@
         {
             Console.WriteLine("Hello, World!");
 
-            Day4();
+            //RunDay<Day1>(24000, 45000);
+            //RunDay<Day2>(15, 12);
+            //RunDay<Day3>(157, 70);
+            //RunDay<Day4>(2, 4);
 
             Console.ReadKey();
         }
 
-        static void Day1()
+        static void RunDay<T>(int test1ExpectedResult, int test2ExpectedResult)
+            where T : BaseDay, new()
         {
-            var d1 = new Day1();
-            var largest = d1.GetLargest();
-            var top3Total = d1.GetTop3Total();
-        }
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"Running {typeof(T).Name}");
+            Console.ResetColor();
 
-        static void Day2()
-        {
-            var d2 = new Day2();
-            var strategyScore = d2.GetStrategyScore();
-            var orchestratedScore = d2.CalculateRealStrategyScore();
-        }
-
-        static void Day3()
-        {
-            var d3 = new Day3();
-            var test1 = d3.Part1Test();
-            if (test1 != 157)
+            var day = Activator.CreateInstance<T>();
+            var test1 = day.Part1Test();
+            if (test1 != test1ExpectedResult)
             {
-                throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '157'");
+                throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '{test1ExpectedResult}'");
             }
+            Console.WriteLine($"Test 1 passed");
 
-            var test2 = d3.Part2Test();
-            if (test2 != 70)
+            var test2 = day.Part2Test();
+            if (test2 != test2ExpectedResult)
             {
-                throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '70'");
+                throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '{test2ExpectedResult}'");
             }
+            Console.WriteLine($"Test 2 passed");
 
-
-            var part1Answer = d3.GetPart1Answer();
-            var part2Answer = d3.GetPart2Answer();
-        }
-
-        static void Day4()
-        {
-            var d4 = new Day4();
-            var test1 = d4.Part1Test();
-            if (test1 != 2)
-            {
-                throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '2'");
-            }
-            var test2 = d4.Part2Test();
-            if (test2 != 4)
-            {
-                throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '4'");
-            }
-
-            var part1Answer = d4.GetPart1Answer();
-            Console.WriteLine("part 2");
-            var part2Answer = d4.GetPart2Answer();
+            var part1Answer = day.GetPart1Answer();
+            Console.WriteLine($"Part 1 Answer: {part1Answer}");
+            var part2Answer = day.GetPart2Answer();
+            Console.WriteLine($"Part 2 Answer: {part2Answer}");
+            Console.ResetColor();
         }
     }
 }
