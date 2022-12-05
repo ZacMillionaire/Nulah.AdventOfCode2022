@@ -53,8 +53,15 @@
             {
                 throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '2'");
             }
+            var test2 = d4.Part2Test();
+            if (test2 != 4)
+            {
+                throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '4'");
+            }
 
             var part1Answer = d4.GetPart1Answer();
+            Console.WriteLine("part 2");
+            var part2Answer = d4.GetPart2Answer();
         }
     }
 }
