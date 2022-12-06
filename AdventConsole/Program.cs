@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AdventConsole
 {
@@ -12,7 +14,8 @@ namespace AdventConsole
             //RunDay<Day2, int>(15, 12);
             //RunDay<Day3, int>(157, 70);
             //RunDay<Day4, int>(2, 4);
-            RunDay<Day5, string>("CMZ", "MCD");
+            //RunDay<Day5, string>("CMZ", "MCD");
+            RunDay<Day6, int[]>(new[] { 7, 5, 6, 10, 11 }, new int[] { });
 
             Console.ReadKey();
         }
@@ -25,25 +28,40 @@ namespace AdventConsole
             Console.ResetColor();
 
             var day = Activator.CreateInstance<T>();
+
             var test1 = day.Part1Test();
-            if (!EqualityComparer<T2>.Default.Equals(test1, test1ExpectedResult))
-            {
-                throw new InvalidDataException($"Calculated result did not match expectation: {test1} should be '{test1ExpectedResult}'");
-            }
+            CheckEquality(test1, test1ExpectedResult);
             Console.WriteLine($"Test 1 passed");
 
             var test2 = day.Part2Test();
-            if (!EqualityComparer<T2>.Default.Equals(test2, test2ExpectedResult))
-            {
-                throw new InvalidDataException($"Calculated result did not match expectation: {test2} should be '{test2ExpectedResult}'");
-            }
+            CheckEquality(test2, test2ExpectedResult);
             Console.WriteLine($"Test 2 passed");
 
             var part1Answer = day.GetPart1Answer();
             Console.WriteLine($"Part 1 Answer: {part1Answer}");
+
             var part2Answer = day.GetPart2Answer();
             Console.WriteLine($"Part 2 Answer: {part2Answer}");
+
             Console.ResetColor();
+        }
+
+        static void CheckEquality<T>(T left, T right)
+        {
+            if (typeof(T).IsArray)
+            {
+                if (left is int[] l && right is int[] r && !l.SequenceEqual(r))
+                {
+                    throw new InvalidDataException($"Calculated result did not match expectation: {string.Join(",", l)} should be '{string.Join(",", r)}'");
+                }
+            }
+            else
+            {
+                if (!EqualityComparer<T>.Default.Equals(left, right))
+                {
+                    throw new InvalidDataException($"Calculated result did not match expectation: {left} should be '{right}'");
+                }
+            }
         }
     }
 }
