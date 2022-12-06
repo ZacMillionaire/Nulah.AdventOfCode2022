@@ -9,6 +9,8 @@ namespace AdventConsole
     internal class Day6 : BaseDay<int[]>
     {
         private int _markerLength = 4;
+        private int _messageLength = 14;
+
         public override int[] Part1Test()
         {
             var input = new List<string>
@@ -24,7 +26,7 @@ namespace AdventConsole
 
             foreach (var messageInput in input)
             {
-                markerOffsets.Add(ProcessLineForStartOfPacket(messageInput.AsSpan()));
+                markerOffsets.Add(ProcessLineForStartOfPacket(messageInput.AsSpan(), _markerLength));
             }
 
             return markerOffsets.ToArray();
@@ -32,27 +34,43 @@ namespace AdventConsole
 
         public override int[] Part2Test()
         {
-            return new int[] { };
+            var input = new List<string>
+            {
+                "mjqjpqmgbljsphdztnvjfqwrcgsmlb",
+                "bvwbjplbgvbhsrlpgdmjqwftvncz",
+                "nppdvjthqldpwncqszvftbrmjlhg",
+                "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg",
+                "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"
+            };
+
+            var markerOffsets = new List<int>();
+
+            foreach (var messageInput in input)
+            {
+                markerOffsets.Add(ProcessLineForStartOfPacket(messageInput.AsSpan(), _messageLength));
+            }
+
+            return markerOffsets.ToArray();
         }
 
         public override int[] GetPart1Answer()
         {
-            return new[] { ProcessLineForStartOfPacket(Input[0].AsSpan()) };
+            return new[] { ProcessLineForStartOfPacket(Input[0].AsSpan(), _markerLength) };
         }
 
         public override int[] GetPart2Answer()
         {
-            throw new NotImplementedException();
+            return new[] { ProcessLineForStartOfPacket(Input[0].AsSpan(), _messageLength) };
         }
 
-        private int ProcessLineForStartOfPacket(ReadOnlySpan<char> lineBuffer)
+        private int ProcessLineForStartOfPacket(ReadOnlySpan<char> lineBuffer, int messageSize)
         {
             for (var i = 0; i < lineBuffer.Length; i++)
             {
-                if (BufferAllDistinct(lineBuffer[i..(i + _markerLength)]))
+                if (BufferAllDistinct(lineBuffer[i..(i + messageSize)]))
                 {
                     // If the buffer is all distinct, return the index of the start of the message
-                    return i + _markerLength;
+                    return i + messageSize;
                 }
             }
 
