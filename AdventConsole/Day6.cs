@@ -32,12 +32,12 @@ namespace AdventConsole
 
         public override int[] Part2Test()
         {
-            throw new NotImplementedException();
+            return new int[] { };
         }
 
         public override int[] GetPart1Answer()
         {
-            throw new NotImplementedException();
+            return new[] { ProcessLineForStartOfPacket(Input[0].AsSpan()) };
         }
 
         public override int[] GetPart2Answer()

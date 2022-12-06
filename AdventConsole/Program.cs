@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace AdventConsole
@@ -38,10 +39,10 @@ namespace AdventConsole
             Console.WriteLine($"Test 2 passed");
 
             var part1Answer = day.GetPart1Answer();
-            Console.WriteLine($"Part 1 Answer: {part1Answer}");
+            Console.WriteLine($"Part 1 Answer: {OutputAnswer(part1Answer)}");
 
             var part2Answer = day.GetPart2Answer();
-            Console.WriteLine($"Part 2 Answer: {part2Answer}");
+            Console.WriteLine($"Part 2 Answer: {OutputAnswer(part2Answer)}");
 
             Console.ResetColor();
         }
@@ -62,6 +63,26 @@ namespace AdventConsole
                     throw new InvalidDataException($"Calculated result did not match expectation: {left} should be '{right}'");
                 }
             }
+        }
+
+        static string OutputAnswer<T>(T answer)
+        {
+            if (answer == null)
+            {
+                throw new ArgumentNullException(nameof(answer));
+            }
+
+            if (typeof(T).IsArray)
+            {
+                var sb = new StringBuilder();
+                foreach (var b in (IList)answer)
+                {
+                    sb.Append(b).Append(",");
+                }
+                return sb.ToString();
+            }
+
+            return answer.ToString()!;
         }
     }
 }
