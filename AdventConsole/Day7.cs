@@ -163,7 +163,7 @@ namespace AdventConsole
             var directoryListingEnded = false;
             var seekPosition = startPosition;
 
-            while (!directoryListingEnded && seekPosition >= commandsAndOutput.Count)
+            while (!directoryListingEnded)
             {
                 var currLine = commandsAndOutput[seekPosition];
                 // Stop looping if we've reached a new command/the end of the directory list block
