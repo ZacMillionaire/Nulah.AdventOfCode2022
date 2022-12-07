@@ -75,9 +75,9 @@ namespace AdventConsole
             };
 
             var parsedFileSystem = ParseFileSystem(input);
-            var a = GetLargestDirectoryToDelete(parsedFileSystem, 70_000_000, 30_000_000);
+            var a = GetSmallestDirectoryToDelete(parsedFileSystem, 70_000_000, 30_000_000);
 
-            return a;
+            return a.Size;
         }
 
         public override long GetPart1Answer()
@@ -93,9 +93,14 @@ namespace AdventConsole
         public override long GetPart2Answer()
         {
             var parsedFileSystem = ParseFileSystem(Input);
-            return GetLargestDirectoryToDelete(parsedFileSystem, 70_000_000, 30_000_000);
+            return GetSmallestDirectoryToDelete(parsedFileSystem, 70_000_000, 30_000_000).Size;
         }
 
+        /// <summary>
+        /// Parses the command output to build a file system, returning the root node of the directory (always "/")
+        /// </summary>
+        /// <param name="commandsAndOutput"></param>
+        /// <returns></returns>
         private Directory ParseFileSystem(List<string> commandsAndOutput)
         {
             var root = new Directory("/");
@@ -146,17 +151,24 @@ namespace AdventConsole
             return root;
         }
 
+        /// <summary>
+        /// Reads and populates based on a directory listing up to the next command line, and returns the new offset position in the input to read from
+        /// </summary>
+        /// <param name="startPosition"></param>
+        /// <param name="commandsAndOutput"></param>
+        /// <param name="parentDirectory"></param>
+        /// <returns></returns>
         private int ReadDirectoryListing(int startPosition, List<string> commandsAndOutput, Directory parentDirectory)
         {
             var directoryListingEnded = false;
             var seekPosition = startPosition;
 
-            while (!directoryListingEnded)
+            while (!directoryListingEnded && seekPosition >= commandsAndOutput.Count)
             {
                 var currLine = commandsAndOutput[seekPosition];
+                // Stop looping if we've reached a new command/the end of the directory list block
                 if (currLine[0] == '$')
                 {
-                    directoryListingEnded = true;
                     break;
                 }
 
@@ -175,6 +187,12 @@ namespace AdventConsole
 
                 seekPosition++;
 
+                // dirty case if the next position would exceed the bounds of the input.
+                // I could remove this and directoryListingEnded but for _relative_ readability
+                // I leave this here so the while loop indicates another case that would end the loop,
+                // even if this would only ever happen at EoF.
+                // The currLine[0] == '$' is what actually breaks the loop but I'm a bad programmer and this is AoC2022
+                // yee haw cowboy hats on
                 if (seekPosition >= commandsAndOutput.Count)
                 {
                     directoryListingEnded = true;
@@ -183,6 +201,11 @@ namespace AdventConsole
             return seekPosition;
         }
 
+        /// <summary>
+        /// Parses a directory from a span where a directory is defined: dir [A-Z]
+        /// </summary>
+        /// <param name="directoryLine"></param>
+        /// <returns></returns>
         private Directory ParseDirectory(ReadOnlySpan<char> directoryLine)
         {
             // A directory is in the form of the following, with the directory name starting 4 characters in
@@ -194,6 +217,11 @@ namespace AdventConsole
             return directory;
         }
 
+        /// <summary>
+        /// Parses a file size and name from a span where a file is defined: [0-9]\s[\d+]
+        /// </summary>
+        /// <param name="fileLine"></param>
+        /// <returns></returns>
         private File ParseFile(ReadOnlySpan<char> fileLine)
         {
             // A file is in the form of the following, with the file name starting at the first alpha character
@@ -211,6 +239,12 @@ namespace AdventConsole
             return file;
         }
 
+        /// <summary>
+        /// Parses a command string and returns its type
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException"></exception>
         private CommandType ParseCommand(ReadOnlySpan<char> command)
         {
             // A command can only be 2 characters
@@ -228,7 +262,14 @@ namespace AdventConsole
             throw new NotSupportedException($"'{commandString}' is not a supported command");
         }
 
-        private long GetLargestDirectoryToDelete(Directory rootDirectory, long totalDiskSpaceAvailable, long diskSpaceRequired)
+        /// <summary>
+        /// Returns the smallest directory that could be deleted that would free the required space given by <paramref name="diskSpaceRequired"/>
+        /// </summary>
+        /// <param name="rootDirectory"></param>
+        /// <param name="totalDiskSpaceAvailable"></param>
+        /// <param name="diskSpaceRequired"></param>
+        /// <returns></returns>
+        private Directory GetSmallestDirectoryToDelete(Directory rootDirectory, long totalDiskSpaceAvailable, long diskSpaceRequired)
         {
             var unusedSpace = totalDiskSpaceAvailable - rootDirectory.Size;
 
@@ -237,16 +278,25 @@ namespace AdventConsole
             var directories = FlattenDirectories(rootDirectory).OrderByDescending(x => x.Size).Skip(1);
             foreach (var directory in directories)
             {
-                var a = unusedSpace + directory.Size;
-                if (a >= diskSpaceRequired)
+                // Calculate the new unused space if we were to delete this directory.
+                // which basically means increase the unused space by the directory size
+                var unusedSpaceIfDeleted = unusedSpace + directory.Size;
+                // If deleting the directory would meet or exceed the required size, add it to a candidate list
+                if (unusedSpaceIfDeleted >= diskSpaceRequired)
                 {
                     candidateList.Add(directory);
                 }
             }
-
-            return candidateList.Min(x => x.Size);
+            // Return the smallest large directory we could delete to meet the required unused space requirement
+            return candidateList.MinBy(x => x.Size);
         }
 
+        /// <summary>
+        /// Returns all directories and child directories recurssively that are equal to or less than <paramref name="threshold"/>
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="threshold"></param>
+        /// <returns></returns>
         private List<Directory> GetDirectoriesUnderSize(Directory current, long threshold)
         {
             var underThresholdDirectories = new List<Directory>();
@@ -266,6 +316,11 @@ namespace AdventConsole
             return underThresholdDirectories;
         }
 
+        /// <summary>
+        /// Returns all directories under the given <see cref="Directory"/> traversing all child directories
+        /// </summary>
+        /// <param name="current"></param>
+        /// <returns></returns>
         private List<Directory> FlattenDirectories(Directory current)
         {
             var directoryList = new List<Directory>();
