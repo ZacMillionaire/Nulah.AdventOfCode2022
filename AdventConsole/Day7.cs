@@ -92,7 +92,10 @@ namespace AdventConsole
 
         public override long GetPart2Answer()
         {
-            throw new NotImplementedException();
+            var parsedFileSystem = ParseFileSystem(Input);
+            var a = GetLargestDirectoryToDelete(parsedFileSystem, 70_000_000, 30_000_000);
+
+            return a;
         }
 
         private Directory ParseFileSystem(List<string> commandsAndOutput)
@@ -230,15 +233,21 @@ namespace AdventConsole
         private long GetLargestDirectoryToDelete(Directory rootDirectory, long totalDiskSpaceAvailable, long diskSpaceRequired)
         {
             var totalUsedSpace = rootDirectory.Size;
+            var unusedSpace = totalDiskSpaceAvailable - rootDirectory.Size;
 
-            foreach (var directory in FlattenDirectories(rootDirectory).OrderByDescending(x => x.Size).Skip(1))
+            var candidateList = new List<Directory>();
+
+            var directories = FlattenDirectories(rootDirectory).OrderByDescending(x => x.Size).Skip(1);
+            foreach (var directory in directories)
             {
-                var a = totalUsedSpace - directory.Size;
-                if (a <= diskSpaceRequired)
+                var a = unusedSpace + directory.Size;
+                if (a >= diskSpaceRequired)
                 {
-                    return directory.Size;
+                    candidateList.Add(directory);
                 }
             }
+
+            return candidateList.Min(x => x.Size);
 
             throw new InvalidOperationException(
                 "Unable to find a valid directory to delete that would free enough space");
