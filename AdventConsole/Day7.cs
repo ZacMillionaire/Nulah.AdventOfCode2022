@@ -40,21 +40,51 @@ namespace AdventConsole
 
             var parsedFileSystem = ParseFileSystem(input);
 
-            return GetDirectoriesOverSize(parsedFileSystem, 100_000)
+            return GetDirectoriesUnderSize(parsedFileSystem, 100_000)
                 .Select(x => x.Size)
                 .Sum();
         }
 
         public override long Part2Test()
         {
-            return -1;
+            var input = new List<string>
+            {
+                "$ cd /",
+                "$ ls",
+                "dir a",
+                "14848514 b.txt",
+                "8504156 c.dat",
+                "dir d",
+                "$ cd a",
+                "$ ls",
+                "dir e",
+                "29116 f",
+                "2557 g",
+                "62596 h.lst",
+                "$ cd e",
+                "$ ls",
+                "584 i",
+                "$ cd ..",
+                "$ cd ..",
+                "$ cd d",
+                "$ ls",
+                "4060174 j",
+                "8033020 d.log",
+                "5626152 d.ext",
+                "7214296 k",
+            };
+
+            var parsedFileSystem = ParseFileSystem(input);
+            var a = GetLargestDirectoryToDelete(parsedFileSystem, 70_000_000, 30_000_000);
+
+            return a;
         }
 
         public override long GetPart1Answer()
         {
             var parsedFileSystem = ParseFileSystem(Input);
 
-            return GetDirectoriesOverSize(parsedFileSystem, 100_000)
+            return GetDirectoriesUnderSize(parsedFileSystem, 100_000)
                 .Select(x => x.Size)
                 .Sum();
 
@@ -197,7 +227,24 @@ namespace AdventConsole
             throw new NotSupportedException($"'{commandString}' is not a supported command");
         }
 
-        private List<Directory> GetDirectoriesOverSize(Directory current, long threshold)
+        private long GetLargestDirectoryToDelete(Directory rootDirectory, long totalDiskSpaceAvailable, long diskSpaceRequired)
+        {
+            var totalUsedSpace = rootDirectory.Size;
+
+            foreach (var directory in FlattenDirectories(rootDirectory).OrderByDescending(x => x.Size).Skip(1))
+            {
+                var a = totalUsedSpace - directory.Size;
+                if (a <= diskSpaceRequired)
+                {
+                    return directory.Size;
+                }
+            }
+
+            throw new InvalidOperationException(
+                "Unable to find a valid directory to delete that would free enough space");
+        }
+
+        private List<Directory> GetDirectoriesUnderSize(Directory current, long threshold)
         {
             var underThresholdDirectories = new List<Directory>();
 
@@ -209,11 +256,30 @@ namespace AdventConsole
                     {
                         underThresholdDirectories.Add(d);
                     }
-                    underThresholdDirectories.AddRange(GetDirectoriesOverSize(d, threshold));
+                    underThresholdDirectories.AddRange(GetDirectoriesUnderSize(d, threshold));
                 }
             }
 
             return underThresholdDirectories;
+        }
+
+        private List<Directory> FlattenDirectories(Directory current)
+        {
+            var directoryList = new List<Directory>();
+            directoryList.Add(current);
+
+            foreach (var child in current.Children)
+            {
+                if (child is Directory d)
+                {
+                    if (d.Children.Count > 0)
+                    {
+                        directoryList.AddRange(FlattenDirectories(d));
+                    }
+                }
+            }
+
+            return directoryList;
         }
 
         private enum CommandType
