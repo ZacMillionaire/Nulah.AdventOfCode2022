@@ -16,8 +16,9 @@ namespace AdventConsole
             //RunDay<Day3, int>(157, 70);
             //RunDay<Day4, int>(2, 4);
             //RunDay<Day5, string>("CMZ", "MCD");
-            RunDay<Day6, int[]>(new[] { 7, 5, 6, 10, 11 }, new int[] { 19, 23, 23, 29, 26 });
-            RunDay<Day7, long>(95437, 24933642);
+            //RunDay<Day6, int[]>(new[] { 7, 5, 6, 10, 11 }, new int[] { 19, 23, 23, 29, 26 });
+            //RunDay<Day7, long>(95437, 24933642);
+            RunDay<Day8, int>(21, -1);
 
             Console.ReadKey();
         }
